@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "League of Legends Match History Embed Message Generagtor for Discord Bot",
   "main": "dist/lol-discord.js",
+  "files" :[
+    "dist",
+    "test"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
