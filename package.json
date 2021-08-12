@@ -1,6 +1,6 @@
 {
   "name": "lol-discord",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "League of Legends Match History Embed Message Generagtor for Discord Bot",
   "main": "dist/lol-discord.js",
   "files" :[
