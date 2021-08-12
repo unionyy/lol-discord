@@ -93,7 +93,7 @@ module.exports = async function(summoner) {
                 else recent_text += "```scss\n[패배] ";
                 /** Time */
                 timeDel = (new Date() - new Date(game.play_time)) / 60000; // Min ago
-                if(timeDel / 60 < 1) recent_text += timeDel + "분 전 | ";
+                if(timeDel / 60 < 1) recent_text += parseInt(timeDel) + "분 전 | ";
                 else if(timeDel / 1440 < 1) recent_text += parseInt(timeDel / 60) + "시간 전 | ";
                 else recent_text += parseInt(timeDel / 1440) + "일 전 | ";
                 /** Queue Type */
