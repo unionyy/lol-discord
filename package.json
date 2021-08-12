@@ -1,0 +1,29 @@
+{
+  "name": "lol-discord",
+  "version": "1.0.0",
+  "description": "League of Legends Match History Embed Message Generagtor for Discord Bot",
+  "main": "dist/lol-discord.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unionyy/lol-discord.git"
+  },
+  "keywords": [
+    "lol",
+    "leagueoflegends",
+    "discord",
+    "discordbot"
+  ],
+  "author": "unionyy <kyk4323@gmail.com> (https://blog.uniony.me)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/unionyy/lol-discord/issues"
+  },
+  "homepage": "https://github.com/unionyy/lol-discord#readme",
+  "dependencies": {
+    "discord.js": "^12.5.3",
+    "urlencode": "^1.1.0"
+  }
+}
