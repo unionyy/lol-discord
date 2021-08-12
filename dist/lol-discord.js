@@ -27,7 +27,11 @@ function HttpsReq(_platform, _name) {
             });
             res.on('end', () => {
                 if(_res) {
-                    resolve({code: res.statusCode, json: JSON.parse(_res)});
+                    try{
+                        resolve({code: res.statusCode, json: JSON.parse(_res)});
+                    } catch(err) {
+                        reject();
+                    }
                 } else {
                     reject();
                 }
@@ -47,12 +51,12 @@ module.exports = async function(summoner) {
 
         /** No User */
         if(data.code == 404) {
-            return `"${summoner}" 유저를 찾을 수 없습니다.`;
+            throw 404;
         }
 
         /** Cannot Get Data from LoLog.me */
         if(data.code != 200) {
-            return "검색 실패";
+            throw "검색 실패";
         }
 
         const user = data.json.userData;
@@ -111,7 +115,7 @@ module.exports = async function(summoner) {
 
     } catch (err) {
         /** Fail to get Data */
-        console.log(err);
-        return "검색 실패";
+        if(err === 404) throw `"${summoner}" 소환사를 찾을 수 없습니다.`
+        throw "검색 실패";
     }
 }
