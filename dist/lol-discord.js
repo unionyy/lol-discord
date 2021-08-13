@@ -56,7 +56,7 @@ module.exports = async function(summoner) {
 
         /** Cannot Get Data from LoLog.me */
         if(data.code != 200) {
-            throw "검색 실패";
+            throw data.code;
         }
 
         const user = data.json.userData;
@@ -110,12 +110,13 @@ module.exports = async function(summoner) {
                 recent_text += "Gold: " + detail.gold + "\n```";
             }
 
-            embed.addField('최근 전적', recent_text).setTimestamp().setFooter('Data from LoLog.me', 'https://lolog.me/favicon/favicon-16x16.png');
+            embed.addField('최근 전적', recent_text || "없음").setTimestamp().setFooter('Data from LoLog.me', 'https://lolog.me/favicon/favicon-16x16.png');
         return embed
 
     } catch (err) {
         /** Fail to get Data */
         if(err === 404) throw `"${summoner}" 소환사를 찾을 수 없습니다.`
+        console.log(err);
         throw "검색 실패";
     }
 }
