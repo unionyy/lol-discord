@@ -4,6 +4,7 @@
 
 ## About
 lol-discord is node.js module that make Discord embed message for League of Legends match history.
+
 ![capture](/images/capture.png)
 
 
