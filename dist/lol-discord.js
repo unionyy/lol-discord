@@ -3,8 +3,9 @@ const {MessageEmbed} = require('discord.js');
 const https = require('https');
 const urlencode = require('urlencode');
 
-const { PROFILEICONURI, QUEUETYPE, CHAMPION } = require('./constants');
-var lang = require('./language/en');
+const { PROFILEICONURI, QUEUETYPE, CHAMPION, LANG, LOCALE } = require('./constants');
+var lang = require('./language/ko');
+var locale = 'kr';
 
 function HttpsReq(_platform, _name) {
     const options = {
@@ -45,14 +46,24 @@ function HttpsReq(_platform, _name) {
 }
 
 module.exports.SetLanguage = function(_lang) {
-    lang = require('./language/' + _lang);
-    return;
+    if(LANG.includes(_lang)) {
+        lang = require('./language/' + _lang);
+        return;
+    } else throw `"${_lang}" Not Support Langauge`;
+}
+
+module.exports.SetLocale = function(_locale) {
+    if(LOCALE.includes(_locale)) {
+        locale = _locale;
+        return;
+    } else throw `"${_locale}" Wrong Locale`;
+    
 }
 
 module.exports.Search = async function(summoner) {
     try{
         /** Get Data From LoLog.me */
-        const data = await HttpsReq("kr", urlencode.encode(summoner));
+        const data = await HttpsReq(locale, urlencode.encode(summoner));
 
         /** No User */
         if(data.code == 404) {
@@ -73,7 +84,7 @@ module.exports.Search = async function(summoner) {
         const embed = new MessageEmbed()
             .setColor('#38b259')
             .setTitle(user.real_name)
-            .setURL('https://lolog.me/kr/user/' + urlencode.encode(user.real_name))
+            .setURL(`https://lolog.me/${locale}/user/` + urlencode.encode(user.real_name))
             .setAuthor('LoLog.me', null, 'https://lolog.me/')
             .setDescription('\u200B')
             .setThumbnail(PROFILEICONURI + user.profile_icon_id + '.png')

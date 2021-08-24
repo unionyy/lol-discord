@@ -180,5 +180,7 @@ module.exports = {
         '875': 'Sett',
         '876': 'Lillia',
         '887': 'Gwen'
-    }
+    },
+    LANG: ['ko', 'en'],
+    LOCALE: ['kr', 'br1', 'eun1', 'euw1', 'jp1', 'la1', 'la2', 'na1', 'oc1', 'tr1', 'tr1', 'ru']
 }

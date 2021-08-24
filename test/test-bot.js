@@ -7,6 +7,7 @@ const token = 'Discord Token';
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
   lol.SetLanguage("ko");
+  lol.SetLocale("kr");
 });
 
 client.on('message', msg => {
