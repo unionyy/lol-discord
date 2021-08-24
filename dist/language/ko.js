@@ -167,5 +167,22 @@ module.exports = {
         ofa: "단일",
         ai: "AI대전",
         poro: "포로왕",
-    }
+    },
+	EMBED: {
+		recentYear: "최근 1년간",
+		count: "판",
+		solo: "솔로 랭크",
+		flex: "자유 랭크",
+		victory: "승리",
+		defeat: "패배",
+		min: "분 전",
+		hour: "시간 전",
+		day: "일 전",
+		recent: "최근 전적",
+		none: "없음"
+	},
+	ERR: {
+		notFound: "소환사를 찾을 수 없습니다.",
+		fail: "검색 실패"
+	}
 }

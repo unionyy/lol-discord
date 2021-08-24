@@ -4,7 +4,7 @@ const https = require('https');
 const urlencode = require('urlencode');
 
 const { PROFILEICONURI, QUEUETYPE, CHAMPION } = require('./constants');
-const ko = require('./language/ko');
+var lang = require('./language/en');
 
 function HttpsReq(_platform, _name) {
     const options = {
@@ -44,7 +44,12 @@ function HttpsReq(_platform, _name) {
     });
 }
 
-module.exports = async function(summoner) {
+module.exports.SetLanguage = function(_lang) {
+    lang = require('./language/' + _lang);
+    return;
+}
+
+module.exports.Search = async function(summoner) {
     try{
         /** Get Data From LoLog.me */
         const data = await HttpsReq("kr", urlencode.encode(summoner));
@@ -73,9 +78,9 @@ module.exports = async function(summoner) {
             .setDescription('\u200B')
             .setThumbnail(PROFILEICONURI + user.profile_icon_id + '.png')
             .addFields(
-                { name: '최근 1년간', value: user.game_count + '판', inline: true  },
-                { name: '솔로 랭크', value: sr_text, inline: true  },
-                { name: '자유 랭크', value: fr_text, inline: true  },
+                { name: lang.EMBED.recentYear, value: user.game_count + lang.EMBED.count, inline: true  },
+                { name: lang.EMBED.solo, value: sr_text, inline: true  },
+                { name: lang.EMBED.flex, value: fr_text, inline: true  },
                 { name: '\u200B', value: '\u200B' }
             );
 
@@ -89,19 +94,19 @@ module.exports = async function(summoner) {
                 detail = details[game.game_id];
 
                 /** Win */
-                if(detail.win_my & 1) recent_text += "```ini\n[승리] ";
-                else recent_text += "```scss\n[패배] ";
+                if(detail.win_my & 1) recent_text += `\`\`\`ini\n[${lang.EMBED.victory}] `;
+                else recent_text += `\`\`\`scss\n[${lang.EMBED.defeat}] `;
                 /** Time */
                 timeDel = (new Date() - new Date(game.play_time)) / 60000; // Min ago
-                if(timeDel / 60 < 1) recent_text += parseInt(timeDel) + "분 전 | ";
-                else if(timeDel / 1440 < 1) recent_text += parseInt(timeDel / 60) + "시간 전 | ";
-                else recent_text += parseInt(timeDel / 1440) + "일 전 | ";
+                if(timeDel / 60 < 1) recent_text += parseInt(timeDel) + lang.EMBED.min + " | ";
+                else if(timeDel / 1440 < 1) recent_text += parseInt(timeDel / 60) + lang.EMBED.min + " | ";
+                else recent_text += parseInt(timeDel / 1440) + lang.EMBED.min + " | ";
                 /** Queue Type */
-                recent_text += ko.QUEUETYPE[QUEUETYPE[game.queue_type]] + " | ";
+                recent_text += lang.QUEUETYPE[QUEUETYPE[game.queue_type]] + " | ";
                 /** Duration */
                 recent_text += `${parseInt(detail.duration/60)}:${(detail.duration % 60).toString().padStart(2,'0')} | `
                 /** Champion */
-                recent_text += ko.CHAMPION[CHAMPION[game.champion]] + '\n';
+                recent_text += lang.CHAMPION[CHAMPION[game.champion]] + '\n';
                 /** KDA */
                 recent_text += `KDA: ${detail.kills}/${detail.deaths}/${detail.assists} (${parseInt(100 * detail.kills / detail.total_kills)}%) | `;
                 /** CS */
@@ -110,13 +115,13 @@ module.exports = async function(summoner) {
                 recent_text += "Gold: " + detail.gold + "\n```";
             }
 
-            embed.addField('최근 전적', recent_text || "없음").setTimestamp().setFooter('Data from LoLog.me', 'https://lolog.me/favicon/favicon-16x16.png');
+            embed.addField(lang.EMBED.recent, recent_text || lang.EMBED.none).setTimestamp().setFooter('Data from LoLog.me', 'https://lolog.me/favicon/favicon-16x16.png');
         return embed
 
     } catch (err) {
         /** Fail to get Data */
-        if(err === 404) throw `"${summoner}" 소환사를 찾을 수 없습니다.`
+        if(err === 404) throw `"${summoner}" ${lang.ERR.notFound}`
         console.log(err);
-        throw "검색 실패";
+        throw lang.ERR.fail;
     }
 }

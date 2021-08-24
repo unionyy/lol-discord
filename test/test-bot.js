@@ -2,10 +2,11 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const lol = require('../dist/lol-discord.js');
 
-const token = 'Discord Bot Token';
+const token = 'Discord Token';
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
+  lol.SetLanguage("ko");
 });
 
 client.on('message', msg => {
@@ -18,7 +19,7 @@ client.on('message', msg => {
     /** Send Searching message */
     msg.reply("\""+summoner+"\" 검색중...").then(msg_searching => {
       /** Call "lol(summoner name)" */
-      lol(summoner).then(embed_msg => {
+      lol.Search(summoner).then(embed_msg => {
           /** If User Exist, embed message is generated */
           msg_searching.delete();
           msg.reply({embed: embed_msg});
