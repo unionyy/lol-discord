@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const lol = require('../dist/lol-discord.js');
 
-const token = 'Nzk5MDk4Nzc0ODA2MDY5MjQ5.X_-oug.KvLP3d4syQzyDto0x5KjwOZaexI';
+const token = 'Discord Bot Token';
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
