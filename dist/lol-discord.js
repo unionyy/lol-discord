@@ -75,55 +75,57 @@ module.exports.Search = async function(summoner) {
             throw data.code;
         }
 
-        const user = data.json.userData;
+        const user = data.json;
         sr_text = user.solo_tier;
         if(user.solo_rank !== "none") sr_text += ' '+user.solo_rank;
         fr_text = user.flex_tier;
         if(user.flex_rank !== "none") fr_text += ' '+user.flex_rank;
 
+        /** Update Time */
+        let updateText = "";
+        let timeDel = (new Date() - new Date(user.update_time)) / 60000; // Min ago
+        if(timeDel / 60 < 1) updateText += parseInt(timeDel) + lang.EMBED.min ;
+        else if(timeDel / 1440 < 1) updateText += parseInt(timeDel / 60) + lang.EMBED.hour ;
+        else updateText += parseInt(timeDel / 1440) + lang.EMBED.day;
+
         const embed = new MessageEmbed()
             .setColor('#38b259')
-            .setTitle(user.real_name)
-            .setURL(`https://lolog.me/${locale}/user/` + urlencode.encode(user.real_name))
+            .setTitle(user.summoner_name)
+            .setURL(`https://lolog.me/${locale}/user/` + urlencode.encode(user.summoner_name))
             .setAuthor('LoLog.me', null, 'https://lolog.me/')
             .setDescription('\u200B')
             .setThumbnail(PROFILEICONURI + user.profile_icon_id + '.png')
             .addFields(
-                { name: lang.EMBED.recentYear, value: user.game_count + lang.EMBED.count, inline: true  },
                 { name: lang.EMBED.solo, value: sr_text, inline: true  },
                 { name: lang.EMBED.flex, value: fr_text, inline: true  },
+                { name: lang.EMBED.update, value: updateText + ` [${lang.EMBED.update}](https://lolog.me/${locale}/user/${urlencode.encode(user.summoner_name)})`, inline: true  },
                 { name: '\u200B', value: '\u200B' }
             );
 
-            /** Match games & details */
-            var details = {};
-            for(detail of data.json.partData) details[detail.game_id] = detail;
-
-            var recent_text = "";
-            for(game of data.json.gameData) {
-                if(!details[game.game_id]) continue;
-                detail = details[game.game_id];
-
+            /** Matches */
+            let recent_text = "";
+            for(const match of user.matches) {
+                const part = match.participant;
                 /** Win */
-                if(detail.win_my & 1) recent_text += `\`\`\`ini\n[${lang.EMBED.victory}] `;
+                if(part.win_my & 1) recent_text += `\`\`\`ini\n[${lang.EMBED.victory}] `;
                 else recent_text += `\`\`\`scss\n[${lang.EMBED.defeat}] `;
                 /** Time */
-                timeDel = (new Date() - new Date(game.play_time)) / 60000; // Min ago
+                timeDel = (new Date() - new Date(match.start_time)) / 60000; // Min ago
                 if(timeDel / 60 < 1) recent_text += parseInt(timeDel) + lang.EMBED.min + " | ";
-                else if(timeDel / 1440 < 1) recent_text += parseInt(timeDel / 60) + lang.EMBED.min + " | ";
-                else recent_text += parseInt(timeDel / 1440) + lang.EMBED.min + " | ";
+                else if(timeDel / 1440 < 1) recent_text += parseInt(timeDel / 60) + lang.EMBED.hour + " | ";
+                else recent_text += parseInt(timeDel / 1440) + lang.EMBED.day + " | ";
                 /** Queue Type */
-                recent_text += lang.QUEUETYPE[QUEUETYPE[game.queue_type]] + " | ";
+                recent_text += lang.QUEUETYPE[QUEUETYPE[match.queue_id]] + " | ";
                 /** Duration */
-                recent_text += `${parseInt(detail.duration/60)}:${(detail.duration % 60).toString().padStart(2,'0')} | `
+                recent_text += `${parseInt(match.duration/60)}:${(match.duration % 60).toString().padStart(2,'0')} | `
                 /** Champion */
-                recent_text += lang.CHAMPION[CHAMPION[game.champion]] + '\n';
+                recent_text += lang.CHAMPION[CHAMPION[part.champ_id]] + '\n';
                 /** KDA */
-                recent_text += `KDA: ${detail.kills}/${detail.deaths}/${detail.assists} (${parseInt(100 * detail.kills / detail.total_kills)}%) | `;
+                recent_text += `KDA: ${part.kills}/${part.deaths}/${part.assists} (${parseInt(100 * (part.kills + part.assists) / part.total_kills)}%) | `;
                 /** CS */
-                recent_text += `CS: ${detail.minions + detail.jungle}(${((detail.minions + detail.jungle) / (detail.duration / 60)).toFixed(1)}) | `;
+                recent_text += `CS: ${part.minion_killed + part.jungle_killed}(${((part.minion_killed + part.jungle_killed) / (match.duration / 60)).toFixed(1)}) | `;
                 /** Gold */
-                recent_text += "Gold: " + detail.gold + "\n```";
+                recent_text += "Gold: " + part.gold_earned + "\n```";
             }
 
             embed.addField(lang.EMBED.recent, recent_text || lang.EMBED.none).setTimestamp().setFooter('Data from LoLog.me', 'https://lolog.me/favicon/favicon-16x16.png');
