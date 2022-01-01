@@ -9,7 +9,7 @@ var locale = 'kr';
 
 function HttpsReq(_platform, _name) {
     const options = {
-        hostname: "lolog.me",
+        hostname: "www.lolog.me",
         port: 443,
         path: "/" + _platform + "/shortcut/" +_name,
         method: 'GET',
@@ -31,7 +31,7 @@ function HttpsReq(_platform, _name) {
                     try{
                         resolve({code: res.statusCode, json: JSON.parse(_res)});
                     } catch(err) {
-                        reject();
+                        reject(err);
                     }
                 } else {
                     reject();
